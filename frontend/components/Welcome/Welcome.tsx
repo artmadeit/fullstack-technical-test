@@ -1,23 +1,24 @@
-import { Anchor, Text, Title } from '@mantine/core';
+import Link from 'next/link';
+import { Button, Group, Text, Title } from '@mantine/core';
 import classes from './Welcome.module.css';
 
 export function Welcome() {
   return (
     <>
       <Title className={classes.title} ta="center" mt={100}>
-        Welcome to{' '}
         <Text inherit variant="gradient" component="span" gradient={{ from: 'pink', to: 'yellow' }}>
-          Mantine
+          AlbergueApp
         </Text>
       </Title>
       <Text c="dimmed" ta="center" size="lg" maw={580} mx="auto" mt="xl">
-        This starter Next.js project includes a minimal setup for server side rendering, if you want
-        to learn more on Mantine + Next.js integration follow{' '}
-        <Anchor href="https://mantine.dev/guides/next/" size="lg">
-          this guide
-        </Anchor>
-        . To get started edit page.tsx file.
+        Administre su albergue de animales rescatados (perros y gatos) Lleve un control de los
+        voluntarios que trabajan en su albergue ,los adoptantes y las adopciones.
       </Text>
+      <Group justify="center" mt="xl">
+        <Button component={Link} href="/login">
+          Iniciar sesión
+        </Button>
+      </Group>
     </>
   );
 }
