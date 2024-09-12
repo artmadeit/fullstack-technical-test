@@ -1,14 +1,45 @@
 'use client';
 
-import { Button, Group, Modal, PasswordInput, Text, TextInput, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Button,
+  Group,
+  LoadingOverlay,
+  Modal,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
 import classes from './Welcome.module.css';
 
 export function Welcome() {
   const [opened, { toggle, close }] = useDisclosure(false);
-  const [formType, setFormType] = useState<'register' | 'login'>('login');
-  // const [loading, setLoading] = useState(false);
+  const formType = 'login';
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setError(null);
+    setTimeout(() => {
+      setLoading(false);
+      router.push('/animals');
+      // setError('User with this email does not exist');
+    }, 3000);
+  };
 
   return (
     <>
@@ -26,13 +57,19 @@ export function Welcome() {
       </Group>
       <Modal opened={opened} onClose={close}>
         {formType === 'login' ? (
-          <>
-            <TextInput label="Email" required placeholder="hello@gluesticker.com" />
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <LoadingOverlay visible={loading} />
+            <TextInput label="Email" required type="email" placeholder="hello@gluesticker.com" />
             <PasswordInput label="Contraseña" required />
+            {error && (
+              <Text c="red" size="sm" mt="sm">
+                {error}
+              </Text>
+            )}
             <Group justify="space-between" mt="xl">
-              <Button onClick={close}>Iniciar sesión</Button>
+              <Button type="submit">Iniciar sesión</Button>
             </Group>
-          </>
+          </form>
         ) : (
           <>
             {/* TODO: if its possible */}
