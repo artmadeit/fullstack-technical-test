@@ -1,8 +1,15 @@
-import Link from 'next/link';
-import { Button, Group, Text, Title } from '@mantine/core';
+'use client';
+
+import { Button, Group, Modal, PasswordInput, Text, TextInput, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useState } from 'react';
 import classes from './Welcome.module.css';
 
 export function Welcome() {
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const [formType, setFormType] = useState<'register' | 'login'>('login');
+  // const [loading, setLoading] = useState(false);
+
   return (
     <>
       <Title className={classes.title} ta="center" mt={100}>
@@ -15,10 +22,37 @@ export function Welcome() {
         voluntarios que trabajan en su albergue ,los adoptantes y las adopciones.
       </Text>
       <Group justify="center" mt="xl">
-        <Button component={Link} href="/login">
-          Iniciar sesión
-        </Button>
+        <Button onClick={toggle}>Iniciar sesión</Button>
       </Group>
+      <Modal opened={opened} onClose={close}>
+        {formType === 'login' ? (
+          <>
+            <TextInput label="Email" required placeholder="hello@gluesticker.com" />
+            <PasswordInput label="Contraseña" required />
+            <Group justify="space-between" mt="xl">
+              <Button onClick={close}>Iniciar sesión</Button>
+            </Group>
+          </>
+        ) : (
+          <>
+            {/* TODO: if its possible */}
+            {/* <TextInput label="Email" required placeholder="hello@gluesticker.com" />
+            <PasswordInput label="Contraseña" required />
+            <Group justify="space-between" mt="xl">
+              <Anchor
+                component="button"
+                type="button"
+                c="dimmed"
+                onClick={toggleFormType}
+                size="sm"
+              >
+                ¿No tiene cuenta? Registrese
+              </Anchor>
+              <Button onClick={close}>Registrese</Button>
+            </Group> */}
+          </>
+        )}
+      </Modal>
     </>
   );
 }
