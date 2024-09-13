@@ -1,15 +1,11 @@
 'use client';
 
 import React from 'react';
-// import { Group } from '@mantine/core';
-// import { MantineLogo } from '@mantinex/mantine-logo';
 import {
   IconDog,
   IconFingerprint,
   IconKey,
-  IconLogout,
-  IconReceipt2,
-  IconSwitchHorizontal,
+  IconReceipt2
 } from '@tabler/icons-react';
 import classes from './SideNavBar.module.css';
 
@@ -40,7 +36,7 @@ export function SideNavBar() {
   ));
 
   return (
-    <nav className={classes.navbar}>
+    <>
       <div className={classes.navbarMain}>
         {/* <Group className={classes.header} justify="space-between">
           <MantineLogo size={28} />
@@ -48,7 +44,7 @@ export function SideNavBar() {
         {links}
       </div>
 
-      <div className={classes.footer}>
+      {/* <div className={classes.footer}>
         <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
           <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
           <span>Change account</span>
@@ -58,7 +54,7 @@ export function SideNavBar() {
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
         </a>
-      </div>
-    </nav>
+      </div> */}
+    </>
   );
 }
