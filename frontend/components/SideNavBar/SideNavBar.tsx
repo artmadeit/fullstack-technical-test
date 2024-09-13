@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
 import {
   IconDog,
   IconFingerprint,
   IconKey,
+  IconLogout,
   IconReceipt2
 } from '@tabler/icons-react';
+import React from 'react';
 import classes from './SideNavBar.module.css';
 
 const data = [
@@ -38,23 +39,15 @@ export function SideNavBar() {
   return (
     <>
       <div className={classes.navbarMain}>
-        {/* <Group className={classes.header} justify="space-between">
-          <MantineLogo size={28} />
-        </Group> */}
         {links}
       </div>
 
-      {/* <div className={classes.footer}>
-        <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </a>
-
+      <div className={classes.footer}>
         <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
         </a>
-      </div> */}
+      </div>
     </>
   );
 }
