@@ -1,7 +1,64 @@
+'use client';
+
+import React from 'react';
+// import { Group } from '@mantine/core';
+// import { MantineLogo } from '@mantinex/mantine-logo';
+import {
+  IconDog,
+  IconFingerprint,
+  IconKey,
+  IconLogout,
+  IconReceipt2,
+  IconSwitchHorizontal,
+} from '@tabler/icons-react';
+import classes from './SideNavBar.module.css';
+
+const data = [
+  { link: '', label: 'Animales en albergue', icon: IconDog },
+  { link: '', label: 'Voluntarios', icon: IconReceipt2 },
+  { link: '', label: 'Adoptantes', icon: IconFingerprint },
+  { link: '', label: 'Adopciones', icon: IconKey },
+];
+
 export function SideNavBar() {
+  const [active, setActive] = React.useState('Billing');
+
+  const links = data.map((item) => (
+    <a
+      className={classes.link}
+      data-active={item.label === active || undefined}
+      href={item.link}
+      key={item.label}
+      onClick={(event) => {
+        event.preventDefault();
+        setActive(item.label);
+      }}
+    >
+      <item.icon className={classes.linkIcon} stroke={1.5} />
+      <span>{item.label}</span>
+    </a>
+  ));
+
   return (
-    <div>
-      <h1>NavBar</h1>
-    </div>
+    <nav className={classes.navbar}>
+      <div className={classes.navbarMain}>
+        {/* <Group className={classes.header} justify="space-between">
+          <MantineLogo size={28} />
+        </Group> */}
+        {links}
+      </div>
+
+      <div className={classes.footer}>
+        <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
+          <span>Change account</span>
+        </a>
+
+        <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+          <IconLogout className={classes.linkIcon} stroke={1.5} />
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
   );
 }
