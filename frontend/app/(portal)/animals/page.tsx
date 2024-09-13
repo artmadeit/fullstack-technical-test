@@ -9,18 +9,13 @@ export default function AnimalListPage() {
   const [opened, { toggle, close }] = useDisclosure(false);
   const form = useForm({
     initialValues: {
-      email: '',
-      password: '',
+      name: '',
+      age: '',
+      type: '',
+      breed: ''
     },
   });
   const [loading, setLoading] = useState(false);
-  const handleSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      close()
-    }, 3000);
-  };
 
   return (
     <>
@@ -29,21 +24,34 @@ export default function AnimalListPage() {
         <Button rightSection={<IconPlus />} onClick={toggle}>Registrar nuevo</Button>
       </Group>
       <Modal opened={opened} onClose={close}>
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form onSubmit={form.onSubmit((values) => {
+          setLoading(true);
+          setTimeout(() => {
+            console.log(values);
+            setLoading(false);
+            close()
+          }, 3000);
+        })}>
           <LoadingOverlay visible={loading} />
-          <TextInput label="Nombre" required placeholder="Tomy" />
-          <TextInput label="Edad" required placeholder="e.g. 1 año o 1 año con 7 meses" />
+          <TextInput label="Nombre" required placeholder="Tomy"
+            {...form.getInputProps('name')}
+          />
+          <TextInput label="Edad" required placeholder="e.g. 1 año o 1 año con 7 meses"
+            {...form.getInputProps('age')}
+          />
           <Radio.Group
             name="type"
             label="Tipo"
             withAsterisk
+            {...form.getInputProps('type')}
           >
             <Group mt="xs">
               <Radio value="DOG" label="Perro" />
               <Radio value="CAT" label="Gato" />
             </Group>
           </Radio.Group>
-          <TextInput label="Raza" required placeholder="Golden Retriever" />
+          <TextInput label="Raza" required placeholder="Golden Retriever"
+            {...form.getInputProps('breed')} />
           <Group justify="space-between" mt="xl">
             <Button type="submit">Guardar</Button>
           </Group>
