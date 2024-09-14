@@ -16,30 +16,30 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
 
-type Animal = {
-  id: number;
+type AnimalFormValues = {
   name: string;
   age: string;
   type: string;
   breed: string;
+};
+
+type Animal = AnimalFormValues & {
+  id: number;
   status: string;
 };
 
+const emptyAnimal = {
+  name: '',
+  age: '',
+  type: '',
+  breed: '',
+};
+
 export default function AnimalListPage() {
-  const [opened, { toggle, close }] = useDisclosure(false);
-  const form = useForm({
-    initialValues: {
-      name: '',
-      age: '',
-      type: '',
-      breed: '',
-    },
-  });
-  const [loading, setLoading] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Animal | null>();
+  const [itemSelected, setItemSelected] = useState<Animal | AnimalFormValues | null>();
 
   const rows = [
     {
@@ -53,7 +53,7 @@ export default function AnimalListPage() {
   ].map((element) => (
     <Table.Tr key={element.id}>
       <Table.Td>
-        <Anchor component="button" fz="sm" onClick={() => toggle()}>
+        <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
           {element.name}
         </Anchor>
       </Table.Td>
@@ -80,7 +80,7 @@ export default function AnimalListPage() {
     <>
       <Group justify="space-between">
         <Title order={1}>Animales</Title>
-        <Button rightSection={<IconPlus />} onClick={toggle}>
+        <Button rightSection={<IconPlus />} onClick={() => setItemSelected(emptyAnimal)}>
           Registrar nuevo
         </Button>
       </Group>
@@ -96,43 +96,8 @@ export default function AnimalListPage() {
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
-      <Modal opened={opened} onClose={close}>
-        <form
-          onSubmit={form.onSubmit((values) => {
-            setLoading(true);
-            setTimeout(() => {
-              console.log(values);
-              setLoading(false);
-              close();
-            }, 3000);
-          })}
-        >
-          <LoadingOverlay visible={loading} />
-          <Stack>
-            <TextInput label="Nombre" required placeholder="Tomy" {...form.getInputProps('name')} />
-            <TextInput
-              label="Edad"
-              required
-              placeholder="e.g. 1 año o 1 año con 7 meses"
-              {...form.getInputProps('age')}
-            />
-            <Radio.Group name="type" label="Tipo" withAsterisk {...form.getInputProps('type')}>
-              <Group mt="xs">
-                <Radio value="DOG" label="Perro" />
-                <Radio value="CAT" label="Gato" />
-              </Group>
-            </Radio.Group>
-            <TextInput
-              label="Raza"
-              required
-              placeholder="Golden Retriever"
-              {...form.getInputProps('breed')}
-            />
-            <Group justify="space-between" mt="xl">
-              <Button type="submit">Guardar</Button>
-            </Group>
-          </Stack>
-        </form>
+      <Modal opened={Boolean(itemSelected)} onClose={() => setItemSelected(null)}>
+        {itemSelected && <AnimalModal initialValues={itemSelected} />}
       </Modal>
       <DeleteConfirmationModal
         opened={Boolean(itemToDelete)}
@@ -143,5 +108,50 @@ export default function AnimalListPage() {
         }}
       />
     </>
+  );
+}
+
+function AnimalModal({ initialValues }: { initialValues: Animal | AnimalFormValues }) {
+  const form = useForm({
+    initialValues,
+  });
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <form
+      onSubmit={form.onSubmit((values) => {
+        setLoading(true);
+        setTimeout(() => {
+          console.log(values);
+          setLoading(false);
+        }, 3000);
+      })}
+    >
+      <LoadingOverlay visible={loading} />
+      <Stack>
+        <TextInput label="Nombre" required placeholder="Tomy" {...form.getInputProps('name')} />
+        <TextInput
+          label="Edad"
+          required
+          placeholder="e.g. 1 año o 1 año con 7 meses"
+          {...form.getInputProps('age')}
+        />
+        <Radio.Group name="type" label="Tipo" withAsterisk {...form.getInputProps('type')}>
+          <Group mt="xs">
+            <Radio value="DOG" label="Perro" />
+            <Radio value="CAT" label="Gato" />
+          </Group>
+        </Radio.Group>
+        <TextInput
+          label="Raza"
+          required
+          placeholder="Golden Retriever"
+          {...form.getInputProps('breed')}
+        />
+        <Group justify="space-between" mt="xl">
+          <Button type="submit">Guardar</Button>
+        </Group>
+      </Stack>
+    </form>
   );
 }

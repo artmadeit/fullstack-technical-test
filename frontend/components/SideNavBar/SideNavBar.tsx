@@ -12,7 +12,7 @@ import {
 import classes from './SideNavBar.module.css';
 
 const data = [
-  { link: '', label: 'Animales en albergue', icon: IconDog },
+  { link: '', label: 'Animales en el albergue', icon: IconDog },
   { link: '', label: 'Voluntarios', icon: IconUsers },
   { link: '', label: 'Adoptantes', icon: IconHomeHand },
   { link: '', label: 'Adopciones', icon: IconHeartHandshake },
