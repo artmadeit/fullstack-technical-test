@@ -1,6 +1,6 @@
 "use client"
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Anchor, Button, Group, LoadingOverlay, Modal, Radio, Table, TextInput, Title } from '@mantine/core';
+import { ActionIcon, Anchor, Button, Group, LoadingOverlay, Modal, Radio, Stack, Table, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
@@ -87,28 +87,30 @@ export default function AnimalListPage() {
           }, 3000);
         })}>
           <LoadingOverlay visible={loading} />
-          <TextInput label="Nombre" required placeholder="Tomy"
-            {...form.getInputProps('name')}
-          />
-          <TextInput label="Edad" required placeholder="e.g. 1 año o 1 año con 7 meses"
-            {...form.getInputProps('age')}
-          />
-          <Radio.Group
-            name="type"
-            label="Tipo"
-            withAsterisk
-            {...form.getInputProps('type')}
-          >
-            <Group mt="xs">
-              <Radio value="DOG" label="Perro" />
-              <Radio value="CAT" label="Gato" />
+          <Stack>
+            <TextInput label="Nombre" required placeholder="Tomy"
+              {...form.getInputProps('name')}
+            />
+            <TextInput label="Edad" required placeholder="e.g. 1 año o 1 año con 7 meses"
+              {...form.getInputProps('age')}
+            />
+            <Radio.Group
+              name="type"
+              label="Tipo"
+              withAsterisk
+              {...form.getInputProps('type')}
+            >
+              <Group mt="xs">
+                <Radio value="DOG" label="Perro" />
+                <Radio value="CAT" label="Gato" />
+              </Group>
+            </Radio.Group>
+            <TextInput label="Raza" required placeholder="Golden Retriever"
+              {...form.getInputProps('breed')} />
+            <Group justify="space-between" mt="xl">
+              <Button type="submit">Guardar</Button>
             </Group>
-          </Radio.Group>
-          <TextInput label="Raza" required placeholder="Golden Retriever"
-            {...form.getInputProps('breed')} />
-          <Group justify="space-between" mt="xl">
-            <Button type="submit">Guardar</Button>
-          </Group>
+          </Stack>
         </form>
       </Modal>
       <DeleteConfirmationModal
