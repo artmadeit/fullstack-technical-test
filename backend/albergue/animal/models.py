@@ -17,3 +17,6 @@ class Animal(models.Model):
     type = models.CharField(max_length=1, choices=AnimalType.choices, null=False)
     breed = models.CharField(max_length=MEDIUM_LENGTH, blank=False, null=False)
     status = models.CharField(max_length=MEDIUM_LENGTH, choices=AnimalStatus.choices, null=False)
+
+    class Meta:
+        ordering = ["name"]

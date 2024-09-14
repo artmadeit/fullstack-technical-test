@@ -18,30 +18,34 @@ import {
 import { useForm } from '@mantine/form';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
 import useSWR from 'swr';
+import { api } from '../api';
 
 type AnimalFormValues = {
   name: string;
   age: string;
-  type: string;
+  type: "D" | "C";
   breed: string;
+  status: "AWAITING_ADOPTION" | "IN_ADOPTION" | "ADOPTED";
 };
 
 type Animal = AnimalFormValues & {
   id: number;
-  status: string;
 };
 
-const emptyAnimal = {
+const emptyAnimal: AnimalFormValues = {
   name: '',
   age: '',
-  type: '',
+  type: 'D',
   breed: '',
+  status: 'IN_ADOPTION'
 };
 
 export default function AnimalListPage() {
   const [itemToDelete, setItemToDelete] = useState<Animal | null>();
   const [itemSelected, setItemSelected] = useState<Animal | AnimalFormValues | null>();
-  const { data, isLoading } = useSWR<Animal[]>('/animals')
+  const { data, isLoading, mutate } = useSWR<Animal[]>('/animals')
+
+  const close = () => setItemSelected(null)
 
   if (isLoading) {
     return <LoadingOverlay visible={isLoading} />
@@ -56,7 +60,7 @@ export default function AnimalListPage() {
       </Table.Td>
       <Table.Td>{element.age}</Table.Td>
       <Table.Td>
-        {element.type === 'DOG' ? 'Perro' : 'Gato'} {element.breed}
+        {element.type === 'D' ? 'Perro' : 'Gato'} {element.breed}
       </Table.Td>
       <Table.Td>{element.status === 'ADOPTED' ? 'Adoptado' : 'En adopción'}</Table.Td>
       <Table.Td>
@@ -93,8 +97,14 @@ export default function AnimalListPage() {
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
-      <Modal opened={Boolean(itemSelected)} onClose={() => setItemSelected(null)}>
-        {itemSelected && <AnimalModal initialValues={itemSelected} />}
+      <Modal opened={Boolean(itemSelected)} onClose={close}>
+        {itemSelected &&
+          <AnimalModal
+            initialValues={itemSelected}
+            onComplete={() => {
+              close()
+              mutate()
+            }} />}
       </Modal>
       <DeleteConfirmationModal
         opened={Boolean(itemToDelete)}
@@ -108,7 +118,10 @@ export default function AnimalListPage() {
   );
 }
 
-function AnimalModal({ initialValues }: { initialValues: Animal | AnimalFormValues }) {
+function AnimalModal({ initialValues, onComplete }: {
+  initialValues: Animal | AnimalFormValues,
+  onComplete: () => void
+}) {
   const form = useForm({
     initialValues,
   });
@@ -116,12 +129,15 @@ function AnimalModal({ initialValues }: { initialValues: Animal | AnimalFormValu
 
   return (
     <form
-      onSubmit={form.onSubmit((values) => {
+      onSubmit={form.onSubmit(async (values) => {
         setLoading(true);
-        setTimeout(() => {
-          console.log(values);
-          setLoading(false);
-        }, 3000);
+        if ("id" in initialValues) {
+          await api.put(`animals/${initialValues.id}/`, values)
+        } else {
+          await api.post("animals/", values)
+        }
+        setLoading(false);
+        onComplete()
       })}
     >
       <LoadingOverlay visible={loading} />
@@ -133,10 +149,16 @@ function AnimalModal({ initialValues }: { initialValues: Animal | AnimalFormValu
           placeholder="e.g. 1 año o 1 año con 7 meses"
           {...form.getInputProps('age')}
         />
-        <Radio.Group name="type" label="Tipo" withAsterisk {...form.getInputProps('type')}>
+        <Radio.Group required name="type" label="Tipo"  {...form.getInputProps('type')}>
           <Group mt="xs">
-            <Radio value="DOG" label="Perro" />
-            <Radio value="CAT" label="Gato" />
+            <Radio value="D" label="Perro" />
+            <Radio value="C" label="Gato" />
+          </Group>
+        </Radio.Group>
+        <Radio.Group required label="Status" {...form.getInputProps('status')}>
+          <Group mt="xs">
+            <Radio value="AWAITING_ADOPTION" label="En espera de adopción" />
+            <Radio value="IN_ADOPTION" label="En adopción" />
           </Group>
         </Radio.Group>
         <TextInput
