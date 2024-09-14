@@ -1,9 +1,19 @@
 "use client"
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import { ActionIcon, Button, Group, LoadingOverlay, Modal, Radio, Table, TextInput, Title } from '@mantine/core';
+import { ActionIcon, Anchor, Button, Group, LoadingOverlay, Modal, Radio, Table, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
+import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
+
+type Animal = {
+  id: number;
+  name: string;
+  age: string;
+  type: string;
+  breed: string;
+  status: string;
+}
 
 export default function AnimalListPage() {
   const [opened, { toggle, close }] = useDisclosure(false);
@@ -16,6 +26,7 @@ export default function AnimalListPage() {
     },
   });
   const [loading, setLoading] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<Animal | null>();
 
   const rows = [
     {
@@ -28,12 +39,18 @@ export default function AnimalListPage() {
     }
   ].map((element) => (
     <Table.Tr key={element.id}>
-      <Table.Td>{element.name}</Table.Td>
+      <Table.Td>
+        <Anchor component="button" fz="sm" onClick={() => toggle()}>
+          {element.name}
+        </Anchor>
+      </Table.Td>
       <Table.Td>{element.age}</Table.Td>
       <Table.Td>{element.type === "DOG" ? "Perro" : "Gato"} {element.breed}</Table.Td>
-      <Table.Td>{element.status === "ADOPTED"? "Adoptado": "En adopción"}</Table.Td>
+      <Table.Td>{element.status === "ADOPTED" ? "Adoptado" : "En adopción"}</Table.Td>
       <Table.Td>
-        <ActionIcon variant="default" aria-label="Settings">
+        <ActionIcon variant="default" aria-label="Settings" onClick={() => {
+          setItemToDelete(element)
+        }}>
           <IconTrash />
         </ActionIcon>
       </Table.Td>
@@ -49,7 +66,8 @@ export default function AnimalListPage() {
       <Table mt={4}>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Nombre</Table.Th>
+            <Table.Th>
+              Nombre</Table.Th>
             <Table.Th>Edad</Table.Th>
             <Table.Th>Raza</Table.Th>
             <Table.Th>Estado</Table.Th>
@@ -93,6 +111,14 @@ export default function AnimalListPage() {
           </Group>
         </form>
       </Modal>
+      <DeleteConfirmationModal
+        opened={Boolean(itemToDelete)}
+        onCancel={() => setItemToDelete(null)}
+        onConfirm={() => {
+          // DELETE 
+          setItemToDelete(null)
+        }}
+      />
     </>
   );
 }
