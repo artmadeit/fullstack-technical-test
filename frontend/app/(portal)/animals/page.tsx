@@ -109,9 +109,12 @@ export default function AnimalListPage() {
       <DeleteConfirmationModal
         opened={Boolean(itemToDelete)}
         onCancel={() => setItemToDelete(null)}
-        onConfirm={() => {
-          // DELETE
-          setItemToDelete(null);
+        onConfirm={async () => {
+          if(itemToDelete) {
+            await api.delete(`animals/${itemToDelete.id}/`)
+            setItemToDelete(null);
+            mutate()
+          }
         }}
       />
     </>
