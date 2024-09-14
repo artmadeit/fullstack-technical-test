@@ -1,4 +1,4 @@
-import { Button, Group } from '@mantine/core';
+import { Group } from '@mantine/core';
 // import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './Header.module.css';
@@ -18,8 +18,8 @@ export function Header() {
             {items}
           </Group> */}
           <Group visibleFrom="sm">
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            {/* <Button variant="default">Log in</Button>
+            <Button>Sign up</Button> */}
           </Group>
         </Group>
       </div>
