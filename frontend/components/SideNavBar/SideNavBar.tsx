@@ -1,13 +1,14 @@
 'use client';
 
+import React from 'react';
+import Link from 'next/link';
 import {
   IconDog,
   IconHeartHandshake,
   IconHomeHand,
   IconLogout,
-  IconUsers
+  IconUsers,
 } from '@tabler/icons-react';
-import React from 'react';
 import classes from './SideNavBar.module.css';
 
 const data = [
@@ -38,15 +39,17 @@ export function SideNavBar() {
 
   return (
     <>
-      <div className={classes.navbarMain}>
-        {links}
-      </div>
+      <div className={classes.navbarMain}>{links}</div>
 
       <div className={classes.footer}>
-        <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+        <Link href="/" className={classes.link}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
-        </a>
+        </Link>
+        {/* <a href="/" className={classes.link} onClick={(event) => event.preventDefault()}>
+          <IconLogout className={classes.linkIcon} stroke={1.5} />
+          <span>Logout</span>
+        </a> */}
       </div>
     </>
   );

@@ -53,7 +53,7 @@ export function Welcome() {
         voluntarios que trabajan en su albergue ,los adoptantes y las adopciones.
       </Text>
       <Group justify="center" mt="xl">
-        <Button onClick={toggle}>Iniciar sesión</Button>
+        <Button onClick={toggle}>Adopte su mascota</Button>
       </Group>
       <Modal opened={opened} onClose={close}>
         {formType === 'login' ? (
