@@ -44,7 +44,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = ["rest_framework", "corsheaders"]
-LOCAL_APPS = ["albergue.animal"]
+LOCAL_APPS = ["albergue.animal", "albergue.adoption"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
@@ -144,3 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Auth
+AUTH_USER_MODEL = "adoption.CustomUser"
