@@ -17,6 +17,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
+import useSWR from 'swr';
 
 type AnimalFormValues = {
   name: string;
@@ -40,17 +41,13 @@ const emptyAnimal = {
 export default function AnimalListPage() {
   const [itemToDelete, setItemToDelete] = useState<Animal | null>();
   const [itemSelected, setItemSelected] = useState<Animal | AnimalFormValues | null>();
+  const { data, isLoading } = useSWR<Animal[]>('/animals')
 
-  const rows = [
-    {
-      id: 1,
-      name: 'Tomy',
-      age: '7 años',
-      type: 'DOG',
-      breed: 'Pekines',
-      status: 'ADOPTED', // TODO: ADOPTED, IN_ADOPTION, AWAITING_ADOPTION
-    },
-  ].map((element) => (
+  if (isLoading) {
+    return <LoadingOverlay visible={isLoading} />
+  }
+
+  const rows = data?.map((element) => (
     <Table.Tr key={element.id}>
       <Table.Td>
         <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
