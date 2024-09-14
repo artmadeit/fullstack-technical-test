@@ -2,19 +2,19 @@
 
 import {
   IconDog,
-  IconFingerprint,
-  IconKey,
+  IconHeartHandshake,
+  IconHomeHand,
   IconLogout,
-  IconReceipt2
+  IconUsers
 } from '@tabler/icons-react';
 import React from 'react';
 import classes from './SideNavBar.module.css';
 
 const data = [
   { link: '', label: 'Animales en albergue', icon: IconDog },
-  { link: '', label: 'Voluntarios', icon: IconReceipt2 },
-  { link: '', label: 'Adoptantes', icon: IconFingerprint },
-  { link: '', label: 'Adopciones', icon: IconKey },
+  { link: '', label: 'Voluntarios', icon: IconUsers },
+  { link: '', label: 'Adoptantes', icon: IconHomeHand },
+  { link: '', label: 'Adopciones', icon: IconHeartHandshake },
 ];
 
 export function SideNavBar() {
