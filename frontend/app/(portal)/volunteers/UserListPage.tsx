@@ -91,8 +91,7 @@ export function UserListPage({ role }: { role: Role }) {
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Nombre completo</Table.Th>
-            <Table.Th>Apellido</Table.Th>
-            <Table.Th>Raza</Table.Th>
+            <Table.Th>Email</Table.Th>
             <Table.Th>Estado</Table.Th>
             <Table.Th></Table.Th>
           </Table.Tr>

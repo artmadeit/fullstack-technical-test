@@ -4,8 +4,9 @@ from albergue.adoption.models import CustomUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'password']
+        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'password', 'is_active']
         extra_kwargs = {'password': {'write_only': True}}
+        read_only_fields = ['is_active']
 
     def create(self, validated_data):
         # We only allow create user (no superusers)
