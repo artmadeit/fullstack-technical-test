@@ -1,7 +1,7 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from albergue.animal.models import Animal
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
@@ -46,3 +46,31 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def get_short_name(self):
         return self.first_name
+    
+class Adoption(models.Model):
+    STATUS_CHOICES = [
+        ('FINISHED', 'Finalizado'),
+        ('IN_PROCESS', 'En proceso'),
+    ]
+    created_at = models.DateTimeField(auto_now_add=True)
+    animal = models.ForeignKey(
+        Animal,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+    volunteer = models.ForeignKey(
+        CustomUser,
+        related_name="+",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+    adopter = models.ForeignKey(
+        CustomUser,
+        related_name="+",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)

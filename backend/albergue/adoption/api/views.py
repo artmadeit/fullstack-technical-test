@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from albergue.adoption.models import CustomUser
-from .serializers import UserSerializer
+from albergue.adoption.models import CustomUser, Adoption
+from .serializers import UserSerializer, AdoptionSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -15,3 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 return queryset.filter(role=role)
 
         return queryset
+    
+class AdoptionViewSet(viewsets.ModelViewSet):
+    queryset = Adoption.objects.all()
+    serializer_class = AdoptionSerializer

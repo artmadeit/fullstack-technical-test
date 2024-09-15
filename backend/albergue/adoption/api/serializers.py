@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from albergue.adoption.models import CustomUser
+from albergue.adoption.models import CustomUser, Adoption
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,3 +27,9 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data['password'])
         instance.save()
         return instance
+
+
+class AdoptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Adoption
+        fields = "__all__"
