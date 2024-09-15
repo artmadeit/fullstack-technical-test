@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import {
   ActionIcon,
   Anchor,
@@ -58,9 +58,16 @@ export default function AdoptionListPage() {
   const rows = data?.map((element) => (
     <Table.Tr key={element.id}>
       <Table.Td>
-        <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
-          {element.animal.name}
-        </Anchor>
+        <ActionIcon
+          variant="default"
+          aria-label="Ver más"
+          onClick={() => setItemSelected(element)}
+        >
+          <IconSearch />
+        </ActionIcon>
+      </Table.Td>
+      <Table.Td>
+        {element.animal.name}
       </Table.Td>
       <Table.Td>{fullName(element.adopter)}</Table.Td>
       <Table.Td>{fullName(element.volunteer)}</Table.Td>
@@ -69,7 +76,7 @@ export default function AdoptionListPage() {
       <Table.Td>
         <ActionIcon
           variant="default"
-          aria-label="Settings"
+          aria-label="Eliminar"
           onClick={() => {
             setItemToDelete(element);
           }}
@@ -91,6 +98,7 @@ export default function AdoptionListPage() {
       <Table mt={4}>
         <Table.Thead>
           <Table.Tr>
+            <Table.Th></Table.Th>
             <Table.Th>Animal</Table.Th>
             <Table.Th>Adoptante</Table.Th>
             <Table.Th>Voluntario</Table.Th>
@@ -114,7 +122,7 @@ export default function AdoptionListPage() {
         opened={Boolean(itemToDelete)}
         onCancel={() => setItemToDelete(null)}
         onConfirm={async () => {
-          if(itemToDelete) {
+          if (itemToDelete) {
             await api.delete(`adoptions/${itemToDelete.id}/`)
             setItemToDelete(null);
             mutate()

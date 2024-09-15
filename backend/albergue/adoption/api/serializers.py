@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from albergue.adoption.models import CustomUser, Adoption
+from albergue.animal.api.serializers import AnimalSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,6 +31,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AdoptionSerializer(serializers.ModelSerializer):
+    animal = AnimalSerializer()
+    volunteer = UserSerializer()
+    adopter = UserSerializer()
+    
     class Meta:
         model = Adoption
         fields = "__all__"
