@@ -46,7 +46,7 @@ const emptyItem: UserFormValues = {
 export function UserListPage({ role }: { role: Role }) {
   const [itemToDelete, setItemToDelete] = useState<User | null>();
   const [itemSelected, setItemSelected] = useState<User | UserFormValues | null>();
-  const { data, isLoading, mutate } = useSWR<User[]>('/adoptions/users')
+  const { data, isLoading, mutate } = useSWR<User[]>(`/adoptions/users?role=${role}`)
 
   const close = () => setItemSelected(null)
 
