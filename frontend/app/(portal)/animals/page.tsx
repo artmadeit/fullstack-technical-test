@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
+import useSWR from 'swr';
 import {
   ActionIcon,
   Anchor,
@@ -17,15 +18,14 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
-import useSWR from 'swr';
 import { api } from '../api';
 
 type AnimalFormValues = {
   name: string;
   age: string;
-  type: "D" | "C";
+  type: 'D' | 'C';
   breed: string;
-  status: "AWAITING_ADOPTION" | "IN_ADOPTION" | "ADOPTED";
+  status: 'AWAITING_ADOPTION' | 'IN_ADOPTION' | 'ADOPTED';
 };
 
 export type Animal = AnimalFormValues & {
@@ -37,18 +37,18 @@ const emptyAnimal: AnimalFormValues = {
   age: '',
   type: 'D',
   breed: '',
-  status: 'IN_ADOPTION'
+  status: 'IN_ADOPTION',
 };
 
 export default function AnimalListPage() {
   const [itemToDelete, setItemToDelete] = useState<Animal | null>();
   const [itemSelected, setItemSelected] = useState<Animal | AnimalFormValues | null>();
-  const { data, isLoading, mutate } = useSWR<Animal[]>('/animals')
+  const { data, isLoading, mutate } = useSWR<Animal[]>('/animals');
 
-  const close = () => setItemSelected(null)
+  const close = () => setItemSelected(null);
 
   if (isLoading) {
-    return <LoadingOverlay visible={isLoading} />
+    return <LoadingOverlay visible={isLoading} />;
   }
 
   const rows = data?.map((element) => (
@@ -98,22 +98,24 @@ export default function AnimalListPage() {
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
       <Modal opened={Boolean(itemSelected)} onClose={close}>
-        {itemSelected &&
+        {itemSelected && (
           <AnimalForm
             initialValues={itemSelected}
             onComplete={() => {
-              close()
-              mutate()
-            }} />}
+              close();
+              mutate();
+            }}
+          />
+        )}
       </Modal>
       <DeleteConfirmationModal
         opened={Boolean(itemToDelete)}
         onCancel={() => setItemToDelete(null)}
         onConfirm={async () => {
-          if(itemToDelete) {
-            await api.delete(`animals/${itemToDelete.id}/`)
+          if (itemToDelete) {
+            await api.delete(`animals/${itemToDelete.id}/`);
             setItemToDelete(null);
-            mutate()
+            mutate();
           }
         }}
       />
@@ -121,9 +123,12 @@ export default function AnimalListPage() {
   );
 }
 
-function AnimalForm({ initialValues, onComplete }: {
-  initialValues: Animal | AnimalFormValues,
-  onComplete: () => void
+function AnimalForm({
+  initialValues,
+  onComplete,
+}: {
+  initialValues: Animal | AnimalFormValues;
+  onComplete: () => void;
 }) {
   const form = useForm({
     initialValues,
@@ -134,13 +139,13 @@ function AnimalForm({ initialValues, onComplete }: {
     <form
       onSubmit={form.onSubmit(async (values) => {
         setLoading(true);
-        if ("id" in initialValues) {
-          await api.put(`animals/${initialValues.id}/`, values)
+        if ('id' in initialValues) {
+          await api.put(`animals/${initialValues.id}/`, values);
         } else {
-          await api.post("animals/", values)
+          await api.post('animals/', values);
         }
         setLoading(false);
-        onComplete()
+        onComplete();
       })}
     >
       <LoadingOverlay visible={loading} />
@@ -152,7 +157,7 @@ function AnimalForm({ initialValues, onComplete }: {
           placeholder="e.g. 1 año o 1 año con 7 meses"
           {...form.getInputProps('age')}
         />
-        <Radio.Group required name="type" label="Tipo"  {...form.getInputProps('type')}>
+        <Radio.Group required name="type" label="Tipo" {...form.getInputProps('type')}>
           <Group mt="xs">
             <Radio value="D" label="Perro" />
             <Radio value="C" label="Gato" />
