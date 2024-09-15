@@ -10,6 +10,8 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import classes from './SideNavBar.module.css';
+import { Anchor } from '@mantine/core';
+import { signOut } from 'next-auth/react';
 
 const data = [
   { link: 'animals', label: 'Animales en el albergue', icon: IconDog },
@@ -38,10 +40,10 @@ export function SideNavBar() {
       <div className={classes.navbarMain}>{links}</div>
 
       <div className={classes.footer}>
-        <Link href="/" className={classes.link}>
+        <Anchor component="button" className={classes.link} onClick={() => signOut()}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </Link>
+          <span>Cerrar sesion</span>
+        </Anchor>
         {/* <a href="/" className={classes.link} onClick={(event) => event.preventDefault()}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
