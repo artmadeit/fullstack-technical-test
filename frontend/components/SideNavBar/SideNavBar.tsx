@@ -12,25 +12,21 @@ import {
 import classes from './SideNavBar.module.css';
 
 const data = [
-  { link: '', label: 'Animales en el albergue', icon: IconDog },
-  { link: '', label: 'Voluntarios', icon: IconUsers },
+  { link: 'animals', label: 'Animales en el albergue', icon: IconDog },
+  { link: 'volunteers', label: 'Voluntarios', icon: IconUsers },
   { link: '', label: 'Adoptantes', icon: IconHomeHand },
   { link: '', label: 'Adopciones', icon: IconHeartHandshake },
 ];
 
 export function SideNavBar() {
-  const [active, setActive] = React.useState('Billing');
+  // const [active, setActive] = React.useState('Billing');
 
   const links = data.map((item) => (
     <a
       className={classes.link}
-      data-active={item.label === active || undefined}
+      // data-active={item.label === active || undefined}
       href={item.link}
       key={item.label}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(item.label);
-      }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
       <span>{item.label}</span>
