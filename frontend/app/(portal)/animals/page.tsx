@@ -99,7 +99,7 @@ export default function AnimalListPage() {
       </Table>
       <Modal opened={Boolean(itemSelected)} onClose={close}>
         {itemSelected &&
-          <AnimalModal
+          <AnimalForm
             initialValues={itemSelected}
             onComplete={() => {
               close()
@@ -121,7 +121,7 @@ export default function AnimalListPage() {
   );
 }
 
-function AnimalModal({ initialValues, onComplete }: {
+function AnimalForm({ initialValues, onComplete }: {
   initialValues: Animal | AnimalFormValues,
   onComplete: () => void
 }) {
