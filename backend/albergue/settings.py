@@ -43,7 +43,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PARTY_APPS = ["rest_framework", "corsheaders"]
+THIRD_PARTY_APPS = ["rest_framework", "corsheaders", "rest_framework_simplejwt"]
 LOCAL_APPS = ["albergue.animal", "albergue.adoption"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -163,8 +163,8 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.parser.CamelCaseJSONParser",
         # Any other parsers
     ),
-    # "DEFAULT_AUTHENTICATION_CLASSES": (
-    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
     # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser",),
 }
