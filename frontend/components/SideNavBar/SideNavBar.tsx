@@ -15,7 +15,7 @@ const data = [
   { link: 'animals', label: 'Animales en el albergue', icon: IconDog },
   { link: 'volunteers', label: 'Voluntarios', icon: IconUsers },
   { link: 'adopters', label: 'Adoptantes', icon: IconHomeHand },
-  { link: '', label: 'Adopciones', icon: IconHeartHandshake },
+  { link: 'adoptions', label: 'Adopciones', icon: IconHeartHandshake },
 ];
 
 export function SideNavBar() {

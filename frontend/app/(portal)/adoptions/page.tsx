@@ -19,31 +19,35 @@ import { useForm } from '@mantine/form';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
 import useSWR from 'swr';
 import { api } from '../api';
+import { fullName, User } from '../volunteers/UserListPage';
+import { Animal } from '../animals/page';
 
-type AnimalFormValues = {
-  name: string;
-  age: string;
-  type: "D" | "C";
-  breed: string;
-  status: "AWAITING_ADOPTION" | "IN_ADOPTION" | "ADOPTED";
+type AdoptionFormValues = {
+  createdAt: Date;
+  animalId?: number;
+  volunteerId?: number;
+  adopterId?: number;
+  status: "FINISHED" | "IN_PROCESS";
 };
 
-export type Animal = AnimalFormValues & {
+type Adoption = {
   id: number;
+  createdAt: string;
+  animal: Animal;
+  volunteer: User;
+  adopter: User;
+  status: "FINISHED" | "IN_PROCESS";
 };
 
-const emptyAnimal: AnimalFormValues = {
-  name: '',
-  age: '',
-  type: 'D',
-  breed: '',
-  status: 'IN_ADOPTION'
+const emptyAdoption: AdoptionFormValues = {
+  createdAt: new Date(),
+  status: "FINISHED"
 };
 
-export default function AnimalListPage() {
-  const [itemToDelete, setItemToDelete] = useState<Animal | null>();
-  const [itemSelected, setItemSelected] = useState<Animal | AnimalFormValues | null>();
-  const { data, isLoading, mutate } = useSWR<Animal[]>('/animals')
+export default function AdoptionListPage() {
+  const [itemToDelete, setItemToDelete] = useState<Adoption | null>();
+  const [itemSelected, setItemSelected] = useState<Adoption | AdoptionFormValues | null>();
+  const { data, isLoading, mutate } = useSWR<Adoption[]>('/adoptions')
 
   const close = () => setItemSelected(null)
 
@@ -55,14 +59,13 @@ export default function AnimalListPage() {
     <Table.Tr key={element.id}>
       <Table.Td>
         <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
-          {element.name}
+          {element.animal.name}
         </Anchor>
       </Table.Td>
-      <Table.Td>{element.age}</Table.Td>
-      <Table.Td>
-        {element.type === 'D' ? 'Perro' : 'Gato'} {element.breed}
-      </Table.Td>
-      <Table.Td>{element.status === 'ADOPTED' ? 'Adoptado' : 'En adopción'}</Table.Td>
+      <Table.Td>{fullName(element.adopter)}</Table.Td>
+      <Table.Td>{fullName(element.volunteer)}</Table.Td>
+      <Table.Td>{element.createdAt}</Table.Td>
+      <Table.Td>{element.status === 'FINISHED' ? 'Finalizado' : 'En progreso'}</Table.Td>
       <Table.Td>
         <ActionIcon
           variant="default"
@@ -80,17 +83,18 @@ export default function AnimalListPage() {
   return (
     <>
       <Group justify="space-between">
-        <Title order={1}>Animales</Title>
-        <Button rightSection={<IconPlus />} onClick={() => setItemSelected(emptyAnimal)}>
+        <Title order={1}>Adopciones</Title>
+        <Button rightSection={<IconPlus />} onClick={() => setItemSelected(emptyAdoption)}>
           Registrar nuevo
         </Button>
       </Group>
       <Table mt={4}>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Nombre</Table.Th>
-            <Table.Th>Edad</Table.Th>
-            <Table.Th>Raza</Table.Th>
+            <Table.Th>Animal</Table.Th>
+            <Table.Th>Adoptante</Table.Th>
+            <Table.Th>Voluntario</Table.Th>
+            <Table.Th>Fecha</Table.Th>
             <Table.Th>Estado</Table.Th>
             <Table.Th></Table.Th>
           </Table.Tr>
@@ -99,7 +103,7 @@ export default function AnimalListPage() {
       </Table>
       <Modal opened={Boolean(itemSelected)} onClose={close}>
         {itemSelected &&
-          <AnimalForm
+          <AdoptionForm
             initialValues={itemSelected}
             onComplete={() => {
               close()
@@ -111,7 +115,7 @@ export default function AnimalListPage() {
         onCancel={() => setItemToDelete(null)}
         onConfirm={async () => {
           if(itemToDelete) {
-            await api.delete(`animals/${itemToDelete.id}/`)
+            await api.delete(`adoptions/${itemToDelete.id}/`)
             setItemToDelete(null);
             mutate()
           }
@@ -121,8 +125,8 @@ export default function AnimalListPage() {
   );
 }
 
-function AnimalForm({ initialValues, onComplete }: {
-  initialValues: Animal | AnimalFormValues,
+function AdoptionForm({ initialValues, onComplete }: {
+  initialValues: Adoption | AdoptionFormValues,
   onComplete: () => void
 }) {
   const form = useForm({
@@ -135,9 +139,9 @@ function AnimalForm({ initialValues, onComplete }: {
       onSubmit={form.onSubmit(async (values) => {
         setLoading(true);
         if ("id" in initialValues) {
-          await api.put(`animals/${initialValues.id}/`, values)
+          await api.put(`adoptions/${initialValues.id}/`, values)
         } else {
-          await api.post("animals/", values)
+          await api.post("adoptions/", values)
         }
         setLoading(false);
         onComplete()

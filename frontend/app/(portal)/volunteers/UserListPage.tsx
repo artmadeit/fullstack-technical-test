@@ -30,7 +30,11 @@ type UserFormValues = {
   password: string
 };
 
-type User = Omit<UserFormValues, "password"> & {
+export function fullName (user: User) {
+  return user.firstName + " " + user.lastName
+}
+
+export type User = Omit<UserFormValues, "password"> & {
   id: number;
   isActive: boolean;
   role: Role
@@ -58,7 +62,7 @@ export function UserListPage({ role }: { role: Role }) {
     <Table.Tr key={element.id}>
       <Table.Td>
         <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
-          {element.firstName + " " + element.lastName}
+          {fullName(element)}
         </Anchor>
       </Table.Td>
       <Table.Td>{element.email}</Table.Td>
