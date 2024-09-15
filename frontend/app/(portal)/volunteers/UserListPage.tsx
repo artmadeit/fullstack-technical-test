@@ -30,7 +30,7 @@ type UserFormValues = {
   password: string
 };
 
-export function fullName (user: User) {
+export function fullName(user: User) {
   return user.firstName + " " + user.lastName
 }
 
@@ -54,35 +54,6 @@ export function UserListPage({ role }: { role: Role }) {
 
   const close = () => setItemSelected(null)
 
-  if (isLoading) {
-    return <LoadingOverlay visible={isLoading} />
-  }
-
-  const rows = data?.map((element) => (
-    <Table.Tr key={element.id}>
-      <Table.Td>
-        <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
-          {fullName(element)}
-        </Anchor>
-      </Table.Td>
-      <Table.Td>{element.email}</Table.Td>
-      <Table.Td>
-        {element.isActive ? 'Active' : 'Inactivo'}
-      </Table.Td>
-      <Table.Td>
-        <ActionIcon
-          variant="default"
-          aria-label="Settings"
-          onClick={() => {
-            setItemToDelete(element);
-          }}
-        >
-          <IconTrash />
-        </ActionIcon>
-      </Table.Td>
-    </Table.Tr>
-  ));
-
   return (
     <>
       <Group justify="space-between">
@@ -91,17 +62,46 @@ export function UserListPage({ role }: { role: Role }) {
           Registrar nuevo
         </Button>
       </Group>
-      <Table mt={4}>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Nombre completo</Table.Th>
-            <Table.Th>Email</Table.Th>
-            <Table.Th>Estado</Table.Th>
-            <Table.Th></Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      {
+        (isLoading) ?
+          <LoadingOverlay visible={isLoading} />
+          : <Table mt={4}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Nombre completo</Table.Th>
+                <Table.Th>Email</Table.Th>
+                <Table.Th>Estado</Table.Th>
+                <Table.Th></Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{
+              data?.map((element) => (
+                <Table.Tr key={element.id}>
+                  <Table.Td>
+                    <Anchor component="button" fz="sm" onClick={() => setItemSelected(element)}>
+                      {fullName(element)}
+                    </Anchor>
+                  </Table.Td>
+                  <Table.Td>{element.email}</Table.Td>
+                  <Table.Td>
+                    {element.isActive ? 'Active' : 'Inactivo'}
+                  </Table.Td>
+                  <Table.Td>
+                    <ActionIcon
+                      variant="default"
+                      aria-label="Settings"
+                      onClick={() => {
+                        setItemToDelete(element);
+                      }}
+                    >
+                      <IconTrash />
+                    </ActionIcon>
+                  </Table.Td>
+                </Table.Tr>
+              ))
+            }</Table.Tbody>
+          </Table>
+      }
       <Modal opened={Boolean(itemSelected)} onClose={close}>
         {itemSelected &&
           <UserForm
