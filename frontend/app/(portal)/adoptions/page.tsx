@@ -5,12 +5,12 @@ import { IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import useSWR from 'swr';
 import {
   ActionIcon,
-  Autocomplete,
   Button,
   Group,
   LoadingOverlay,
   Modal,
   Radio,
+  Select,
   Stack,
   Table,
   Title,
@@ -143,6 +143,10 @@ function AdoptionForm({
   const { data: adopters } = useSWR<User[]>('/adoptions/users/?role=ADOPTER');
   const { data: volunteers } = useSWR<User[]>('/adoptions/users?role=VOLUNTEER');
 
+  if (!animals) return <LoadingOverlay visible={loading} />;
+  if (!adopters) return <LoadingOverlay visible={loading} />;
+  if (!volunteers) return <LoadingOverlay visible={loading} />;
+
   return (
     <form
       onSubmit={form.onSubmit(async (values) => {
@@ -158,20 +162,29 @@ function AdoptionForm({
     >
       <LoadingOverlay visible={loading} />
       <Stack>
-        <Autocomplete
+        <Select
           label="Escoge tu mascota"
-          placeholder=""
-          data={animals?.map((animal) => animal.name)}
+          searchable
+          data={animals.map((animal) => ({
+            value: animal.id.toString(),
+            label: animal.name,
+          }))}
         />
-        <Autocomplete
+        <Select
           label="Escoge al adoptante"
-          placeholder=""
-          data={adopters?.map((adopter) => adopter.firstName)}
+          searchable
+          data={adopters.map((adopter) => ({
+            value: adopter.id.toString(),
+            label: adopter.firstName,
+          }))}
         />
-        <Autocomplete
+        <Select
           label="Escoge al voluntario"
-          placeholder=""
-          data={volunteers?.map((volunteer) => volunteer.firstName)}
+          searchable
+          data={volunteers.map((volunteer) => ({
+            value: volunteer.id.toString(),
+            label: volunteer.firstName,
+          }))}
         />
         <Radio.Group required label="Status" {...form.getInputProps('status')}>
           <Group mt="xs">
