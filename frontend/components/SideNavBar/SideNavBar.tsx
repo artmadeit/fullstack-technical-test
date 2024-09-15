@@ -22,7 +22,7 @@ export function SideNavBar() {
   // const [active, setActive] = React.useState('Billing');
 
   const links = data.map((item) => (
-    <a
+    <Link
       className={classes.link}
       // data-active={item.label === active || undefined}
       href={item.link}
@@ -30,7 +30,7 @@ export function SideNavBar() {
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
       <span>{item.label}</span>
-    </a>
+    </Link>
   ));
 
   return (
