@@ -24,9 +24,9 @@ import { Animal } from '../animals/page';
 
 type AdoptionFormValues = {
   createdAt: Date;
-  animalId?: number;
-  volunteerId?: number;
-  adopterId?: number;
+  animal?: number;
+  volunteer?: number;
+  adopter?: number;
   status: "FINISHED" | "IN_PROCESS";
 };
 
@@ -157,31 +157,12 @@ function AdoptionForm({ initialValues, onComplete }: {
     >
       <LoadingOverlay visible={loading} />
       <Stack>
-        <TextInput label="Nombre" required placeholder="Tomy" {...form.getInputProps('name')} />
-        <TextInput
-          label="Edad"
-          required
-          placeholder="e.g. 1 año o 1 año con 7 meses"
-          {...form.getInputProps('age')}
-        />
-        <Radio.Group required name="type" label="Tipo"  {...form.getInputProps('type')}>
-          <Group mt="xs">
-            <Radio value="D" label="Perro" />
-            <Radio value="C" label="Gato" />
-          </Group>
-        </Radio.Group>
         <Radio.Group required label="Status" {...form.getInputProps('status')}>
           <Group mt="xs">
-            <Radio value="AWAITING_ADOPTION" label="En espera de adopción" />
-            <Radio value="IN_ADOPTION" label="En adopción" />
+            <Radio value="FINISHED" label="Finalizado" />
+            <Radio value="IN_PROCESS" label="En progreso" />
           </Group>
         </Radio.Group>
-        <TextInput
-          label="Raza"
-          required
-          placeholder="Golden Retriever"
-          {...form.getInputProps('breed')}
-        />
         <Group justify="space-between" mt="xl">
           <Button type="submit">Guardar</Button>
         </Group>
