@@ -51,9 +51,11 @@ export function Welcome() {
           <form onSubmit={form.onSubmit((values) => {
             setLoading(true);
             setError(null);
-            signIn("credentials", values)
-            router.push("/animals")
-            setLoading(false);
+            signIn("credentials", {
+              email: values.email,
+              password: values.password,
+              callbackUrl: "/animals"
+            })
           })}>
             <LoadingOverlay visible={loading} />
             <TextInput

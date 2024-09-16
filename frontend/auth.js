@@ -5,8 +5,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
-        password: {}
+        email: {
+          label: "Email", type: "email" 
+        },
+        password: {
+          label: "Contraseña", type: "password" 
+        }
       },
       authorize: async (credentials) => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/token/", {
@@ -28,6 +32,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     })
   ],
+  pages: {
+    signIn: "/signIn"
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
