@@ -34,7 +34,7 @@ export default function HomePage() {
         signIn("credentials", {
           email: values.email,
           password: values.password,
-          callbackUrl: "/animals"
+          callbackUrl: "/portal/animals"
         })
       })}>
         <Stack w="70vh">
