@@ -2,32 +2,31 @@
 
 import { useState } from 'react';
 import { IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import useSWR from 'swr';
 import {
   ActionIcon,
-  Anchor,
   Button,
   Group,
   LoadingOverlay,
   Modal,
   Radio,
+  Select,
   Stack,
   Table,
-  TextInput,
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DeleteConfirmationModal } from '@/components/ConfirmationModal/DeleteConfirmationModal';
-import useSWR from 'swr';
+import { Animal } from '../animals/page';
 import { api } from '../api';
 import { fullName, User } from '../volunteers/UserListPage';
-import { Animal } from '../animals/page';
 
 type AdoptionFormValues = {
   createdAt: Date;
   animal?: number;
   volunteer?: number;
   adopter?: number;
-  status: "FINISHED" | "IN_PROCESS";
+  status: 'FINISHED' | 'IN_PROCESS';
 };
 
 type Adoption = {
@@ -36,39 +35,33 @@ type Adoption = {
   animal: Animal;
   volunteer: User;
   adopter: User;
-  status: "FINISHED" | "IN_PROCESS";
+  status: 'FINISHED' | 'IN_PROCESS';
 };
 
 const emptyAdoption: AdoptionFormValues = {
   createdAt: new Date(),
-  status: "FINISHED"
+  status: 'FINISHED',
 };
 
 export default function AdoptionListPage() {
   const [itemToDelete, setItemToDelete] = useState<Adoption | null>();
   const [itemSelected, setItemSelected] = useState<Adoption | AdoptionFormValues | null>();
-  const { data, isLoading, mutate } = useSWR<Adoption[]>('/adoptions')
+  const { data, isLoading, mutate } = useSWR<Adoption[]>('/adoptions');
 
-  const close = () => setItemSelected(null)
+  const close = () => setItemSelected(null);
 
   if (isLoading) {
-    return <LoadingOverlay visible={isLoading} />
+    return <LoadingOverlay visible={isLoading} />;
   }
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.id}>
       <Table.Td>
-        <ActionIcon
-          variant="default"
-          aria-label="Ver más"
-          onClick={() => setItemSelected(element)}
-        >
+        <ActionIcon variant="default" aria-label="Ver más" onClick={() => setItemSelected(element)}>
           <IconSearch />
         </ActionIcon>
       </Table.Td>
-      <Table.Td>
-        {element.animal.name}
-      </Table.Td>
+      <Table.Td>{element.animal.name}</Table.Td>
       <Table.Td>{fullName(element.adopter)}</Table.Td>
       <Table.Td>{fullName(element.volunteer)}</Table.Td>
       <Table.Td>{element.createdAt}</Table.Td>
@@ -110,22 +103,24 @@ export default function AdoptionListPage() {
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
       <Modal opened={Boolean(itemSelected)} onClose={close}>
-        {itemSelected &&
+        {itemSelected && (
           <AdoptionForm
             initialValues={itemSelected}
             onComplete={() => {
-              close()
-              mutate()
-            }} />}
+              close();
+              mutate();
+            }}
+          />
+        )}
       </Modal>
       <DeleteConfirmationModal
         opened={Boolean(itemToDelete)}
         onCancel={() => setItemToDelete(null)}
         onConfirm={async () => {
           if (itemToDelete) {
-            await api.delete(`adoptions/${itemToDelete.id}/`)
+            await api.delete(`adoptions/${itemToDelete.id}/`);
             setItemToDelete(null);
-            mutate()
+            mutate();
           }
         }}
       />
@@ -133,30 +128,64 @@ export default function AdoptionListPage() {
   );
 }
 
-function AdoptionForm({ initialValues, onComplete }: {
-  initialValues: Adoption | AdoptionFormValues,
-  onComplete: () => void
+function AdoptionForm({
+  initialValues,
+  onComplete,
+}: {
+  initialValues: Adoption | AdoptionFormValues;
+  onComplete: () => void;
 }) {
   const form = useForm({
     initialValues,
   });
   const [loading, setLoading] = useState(false);
+  const { data: animals } = useSWR<Animal[]>('/animals');
+  const { data: adopters } = useSWR<User[]>('/adoptions/users/?role=ADOPTER');
+  const { data: volunteers } = useSWR<User[]>('/adoptions/users?role=VOLUNTEER');
+
+  if (!animals) return <LoadingOverlay visible={loading} />;
+  if (!adopters) return <LoadingOverlay visible={loading} />;
+  if (!volunteers) return <LoadingOverlay visible={loading} />;
 
   return (
     <form
       onSubmit={form.onSubmit(async (values) => {
         setLoading(true);
-        if ("id" in initialValues) {
-          await api.put(`adoptions/${initialValues.id}/`, values)
+        if ('id' in initialValues) {
+          await api.put(`adoptions/${initialValues.id}/`, values);
         } else {
-          await api.post("adoptions/", values)
+          await api.post('adoptions/', values);
         }
         setLoading(false);
-        onComplete()
+        onComplete();
       })}
     >
       <LoadingOverlay visible={loading} />
       <Stack>
+        <Select
+          label="Escoge tu mascota"
+          searchable
+          data={animals.map((animal) => ({
+            value: animal.id.toString(),
+            label: animal.name,
+          }))}
+        />
+        <Select
+          label="Escoge al adoptante"
+          searchable
+          data={adopters.map((adopter) => ({
+            value: adopter.id.toString(),
+            label: adopter.firstName,
+          }))}
+        />
+        <Select
+          label="Escoge al voluntario"
+          searchable
+          data={volunteers.map((volunteer) => ({
+            value: volunteer.id.toString(),
+            label: volunteer.firstName,
+          }))}
+        />
         <Radio.Group required label="Status" {...form.getInputProps('status')}>
           <Group mt="xs">
             <Radio value="FINISHED" label="Finalizado" />
